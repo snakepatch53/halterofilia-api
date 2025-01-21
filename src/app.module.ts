@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
+import { UserModule } from './user/user.module';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -20,8 +19,9 @@ dotenv.config();
             entities: [join(__dirname, '**', '*.entity.{ts,js}')],
             synchronize: process.env.PROD === 'true' ? false : true,
         }),
+        UserModule,
     ],
-    controllers: [AppController],
-    providers: [AppService],
+    controllers: [],
+    providers: [],
 })
 export class AppModule {}
