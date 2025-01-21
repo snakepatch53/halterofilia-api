@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -19,6 +20,7 @@ dotenv.config();
             entities: [join(__dirname, '**', '*.entity.{ts,js}')],
             synchronize: process.env.PROD === 'true' ? false : true,
         }),
+        AuthModule,
         UserModule,
     ],
     controllers: [],

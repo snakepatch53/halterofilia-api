@@ -8,6 +8,9 @@ export class User {
     @Column()
     name: string;
 
+    @Column({ type: 'enum', enum: ['admin', 'user'], default: 'user' })
+    role: string;
+
     @Column()
     username: string;
 
