@@ -11,6 +11,7 @@ export class UserService {
         @InjectRepository(User)
         private usersRepository: Repository<User>,
     ) {}
+
     create(createUserDto: CreateUserDto) {
         return this.usersRepository.save(createUserDto);
     }
@@ -27,8 +28,8 @@ export class UserService {
         });
     }
 
-    update(id: number, updateUserDto: UpdateUserDto) {
-        this.usersRepository.update(id, updateUserDto);
+    async update(id: number, updateUserDto: UpdateUserDto) {
+        await this.usersRepository.update(id, updateUserDto);
         return {
             id,
             ...updateUserDto,
