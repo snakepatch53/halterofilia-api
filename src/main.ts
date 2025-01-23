@@ -13,6 +13,12 @@ async function bootstrap() {
             transform: true,
         }),
     );
+
+    app.enableCors({
+        origin: ['http://localhost:5173', 'https://ideasoft.one'],
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+        credentials: true,
+    });
     await app.listen(process.env.APP_PORT ?? 3000);
 }
 void bootstrap();

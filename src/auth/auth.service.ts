@@ -21,6 +21,7 @@ export class AuthService {
         // if (!user) return null;
 
         // Ejemplo simple “hardcodeado”:
+
         const userLogin = this.usersRepository.findOne({
             where: { username: username, password: pass },
         });
