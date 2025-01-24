@@ -17,17 +17,22 @@ export class AuthService {
 
     // Valida credenciales y retorna algo representando al usuario
     async validateUser(username: string, pass: string): Promise<any> {
-        // const user = await this.usersService.findByUsername(username);
-        // if (!user) return null;
-
         // Ejemplo simple “hardcodeado”:
-
         const userLogin = this.usersRepository.findOne({
             where: { username: username, password: pass },
         });
 
         if (userLogin) return userLogin;
         return null;
+    }
+
+    verifyToken(token: string) {
+        try {
+            const decoded = this.jwtService.verify(token);
+            return true; // o retornar decoded
+        } catch (err) {
+            throw new UnauthorizedException('Token invalid');
+        }
     }
 
     // Genera el token para un usuario
