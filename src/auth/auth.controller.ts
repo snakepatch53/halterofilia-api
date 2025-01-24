@@ -57,5 +57,6 @@ export class AuthController {
             message: 'You are logged out!',
             isLogged: false,
         });
+        return response;
     }
 }

@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsString, MinLength } from 'class-validator';
+import {
+    isNotEmpty,
+    IsNotEmpty,
+    IsOptional,
+    IsString,
+    MinLength,
+} from 'class-validator';
 
 export class LoginDto {
     @IsNotEmpty({ message: 'El username es requerido' })
@@ -11,12 +17,14 @@ export class LoginDto {
     password: string;
 
     // Opcional: socketId para notificar a un cliente específico
+    @IsOptional()
     @IsString({ message: 'El socketId debe ser un texto' })
     socketId: string;
 }
 
 export class LogoutDto {
     // Opcional: socketId para notificar a un cliente específico
+    @IsOptional()
     @IsString({ message: 'El socketId debe ser un texto' })
     socketId: string;
 }
