@@ -1,3 +1,4 @@
+import { Exclude, Transform } from 'class-transformer';
 import {
     IsEnum,
     IsInt,
@@ -44,6 +45,7 @@ export class UpdateInstitutionDto {
     @MinLength(5, { message: 'La ubicación debe tener al menos 5 caracteres' })
     location: string;
 
+    @IsNotEmpty({ message: 'El userId es requerido' })
     @IsInt({ message: 'El userId debe ser un número entero' })
     @IsExistsInDb(User, 'id', {
         message: 'El usuario con el ID $value no existe',

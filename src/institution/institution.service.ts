@@ -4,6 +4,7 @@ import { UpdateInstitutionDto } from './dto/update-institution.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Institution } from './entities/institution.entity';
 import { Repository } from 'typeorm';
+import { QueriesInstitutionDto } from './dto/queries-institution.dto';
 
 @Injectable()
 export class InstitutionService {
@@ -12,29 +13,49 @@ export class InstitutionService {
         private repository: Repository<Institution>,
     ) {}
 
-    create(createInstitutionDto: CreateInstitutionDto) {
-        console.log(createInstitutionDto);
-        return this.repository.save(createInstitutionDto);
+    async create(
+        createInstitutionDto: CreateInstitutionDto,
+        query: QueriesInstitutionDto,
+    ) {
+        const created = await this.repository.save(createInstitutionDto);
+        return this.repository.findOne({
+            where: {
+                id: created.id,
+            },
+            relations: query.include,
+        });
     }
 
-    findAll() {
-        return this.repository.find();
+    findAll(query: QueriesInstitutionDto) {
+        return this.repository.find({
+            relations: query.include,
+        });
     }
 
-    findOne(id: number) {
+    findOne(id: number, query: QueriesInstitutionDto) {
         return this.repository.findOne({
             where: {
                 id,
             },
+            relations: query.include,
         });
     }
 
-    async update(id: number, updateInstitutionDto: UpdateInstitutionDto) {
-        await this.repository.update(id, updateInstitutionDto);
-        return {
+    async update(
+        id: number,
+        updateInstitutionDto: UpdateInstitutionDto,
+        query: QueriesInstitutionDto,
+    ) {
+        await this.repository.save({
             id,
             ...updateInstitutionDto,
-        };
+        });
+        return this.repository.findOne({
+            where: {
+                id,
+            },
+            relations: query.include,
+        });
     }
 
     async remove(id: number) {
