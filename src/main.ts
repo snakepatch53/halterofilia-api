@@ -1,9 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { WsAdapter } from './common/adapters/ws.adapter';
+import { useContainer } from 'class-validator';
 
 import * as dotenv from 'dotenv';
-import { WsAdapter } from './common/adapters/ws.adapter';
 dotenv.config();
 
 async function bootstrap() {
@@ -12,8 +13,10 @@ async function bootstrap() {
         new ValidationPipe({
             whitelist: true,
             transform: true,
+            transformOptions: { enableImplicitConversion: true }, // 🔥 Permite conversiones automáticas
         }),
     );
+    useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
     // Centraliza la config de CORS en un solo objeto:
     const corsConfig = {

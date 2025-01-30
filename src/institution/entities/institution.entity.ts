@@ -3,6 +3,7 @@ import { User } from 'src/user/entities/user.entity';
 import {
     Column,
     Entity,
+    JoinColumn,
     ManyToOne,
     OneToMany,
     PrimaryGeneratedColumn,
@@ -34,11 +35,11 @@ export class Institution {
     @Column()
     location: string;
 
-    @OneToMany(() => Registration, (registration) => registration.institution)
-    registrations: Registration[];
-
     @ManyToOne(() => User, (user) => user.institutions, {
         onDelete: 'CASCADE',
     })
     user: User;
+
+    @OneToMany(() => Registration, (registration) => registration.institution)
+    registrations: Registration[];
 }

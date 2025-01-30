@@ -34,19 +34,19 @@ export class UserController {
         return this.userService.findAll();
     }
 
-    @Roles(ROLE.ADMIN)
+    @Roles(ROLE.ADMIN, ROLE.USER)
     @Get(':id')
     findOne(@Param('id') id: string) {
         return this.userService.findOne(+id);
     }
 
-    @Roles(ROLE.ADMIN)
+    @Roles(ROLE.ADMIN, ROLE.USER)
     @Patch(':id')
     update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
         return this.userService.update(+id, updateUserDto);
     }
 
-    @Roles(ROLE.ADMIN)
+    @Roles(ROLE.ADMIN, ROLE.USER)
     @Delete(':id')
     remove(@Param('id') id: string) {
         return this.userService.remove(+id);

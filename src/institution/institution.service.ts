@@ -13,6 +13,7 @@ export class InstitutionService {
     ) {}
 
     create(createInstitutionDto: CreateInstitutionDto) {
+        console.log(createInstitutionDto);
         return this.repository.save(createInstitutionDto);
     }
 

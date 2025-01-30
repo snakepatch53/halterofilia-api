@@ -13,6 +13,8 @@ import { QualificationModule } from './qualification/qualification.module';
 import { JudgeModule } from './judge/judge.module';
 
 import * as dotenv from 'dotenv';
+import { setAppDataSource } from './common/database/data-source';
+import { DataSource } from 'typeorm';
 dotenv.config();
 
 @Module({
@@ -39,5 +41,13 @@ dotenv.config();
     ],
     controllers: [],
     providers: [],
+    exports: [],
 })
-export class AppModule {}
+export class AppModule {
+    constructor(private readonly dataSource: DataSource) {
+        setAppDataSource(this.dataSource); // 🔥 Inicializamos `AppDataSource`
+        console.log(
+            '🔥 DataSource inicializado globalmente en `AppDataSource`',
+        );
+    }
+}
