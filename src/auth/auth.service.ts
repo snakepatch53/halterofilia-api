@@ -39,7 +39,7 @@ export class AuthService {
     async login(user: any) {
         const payload = {
             username: user.username,
-            sub: user.userId,
+            sub: user.id,
             role: user.role,
         };
         // 'sub' es una convención JWT para guardar un identificador principal

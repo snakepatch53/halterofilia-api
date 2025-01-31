@@ -39,7 +39,7 @@ export class UserService {
     async remove(id: number) {
         const result = await this.usersRepository.delete(id);
         return {
-            message: `User with id ${id} has been deleted`,
+            message: `User con id ${id} ha sido eliminado`,
             ...result,
             id,
         };
