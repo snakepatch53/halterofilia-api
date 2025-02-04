@@ -4,9 +4,9 @@ import { UpdateInstitutionDto } from './dto/update-institution.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Institution } from './entities/institution.entity';
 import { Repository } from 'typeorm';
-import { QueriesInstitutionDto } from './dto/queries-institution.dto';
 import { User } from 'src/user/entities/user.entity';
-import { ROLE } from 'src/common/enums/role.enum';
+import { ROLE } from 'src/common/constants/role.constants';
+import { QueryInstitutionDto } from './dto/query-institution.dto';
 
 @Injectable()
 export class InstitutionService {
@@ -17,7 +17,7 @@ export class InstitutionService {
 
     async create(
         createInstitutionDto: CreateInstitutionDto,
-        query: QueriesInstitutionDto,
+        query: QueryInstitutionDto,
         user: User,
     ) {
         let created = null;
@@ -35,7 +35,7 @@ export class InstitutionService {
         });
     }
 
-    findAll(query: QueriesInstitutionDto, user: User) {
+    findAll(query: QueryInstitutionDto, user: User) {
         if (user.role === ROLE.ADMIN) {
             return this.repository.find({
                 relations: query.include,
@@ -51,7 +51,7 @@ export class InstitutionService {
     async update(
         id: number,
         updateInstitutionDto: UpdateInstitutionDto,
-        query: QueriesInstitutionDto,
+        query: QueryInstitutionDto,
         user: User,
     ) {
         if (user.role === ROLE.ADMIN)
@@ -60,12 +60,23 @@ export class InstitutionService {
                 ...updateInstitutionDto,
                 user: updateInstitutionDto.user, // Hay que definir explícitamente la relación que no se mapea automáticamente
             });
-        else
-            await this.repository.save({
-                id,
-                ...updateInstitutionDto,
-                user: user,
+        else {
+            const institution = await this.repository.findOne({
+                where: { id },
+                relations: ['user'],
             });
+
+            if (institution.user.id === user.id)
+                await this.repository.save({
+                    id,
+                    ...updateInstitutionDto,
+                    user: user,
+                });
+            else
+                throw new ForbiddenException(
+                    'Solo puedes editar tus instituciones',
+                );
+        }
 
         return this.repository.findOne({
             where: { id },

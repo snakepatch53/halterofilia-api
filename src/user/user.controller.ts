@@ -7,6 +7,9 @@ import {
     Param,
     Delete,
     UseGuards,
+    UploadedFile,
+    UploadedFiles,
+    Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -15,40 +18,67 @@ import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { Public } from 'src/auth/decorators/public.decorator';
-import { ROLE } from 'src/common/enums/role.enum';
+import { ROLE } from 'src/common/constants/role.constants';
+import { ParamUserDto } from './dto/param-user.dto';
+import { ValidateFiles } from 'src/common/decorators/validate-files.decorator';
+import { plainToInstance } from 'class-transformer';
+import { ResponseUserDto } from './dto/response-user.dto';
+import { QueryUserDto } from './dto/query-user.dto';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { User } from './entities/user.entity';
 
+const optionsFiles = {
+    fieldName: 'photo',
+    allowedTypes: ['image/png', 'image/jpg', 'image/jpeg'],
+};
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('user')
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
-    @Public()
+    // @Public()
+
+    @Roles(ROLE.ADMIN)
     @Post()
-    create(@Body() createUserDto: CreateUserDto) {
-        return this.userService.create(createUserDto);
+    @ValidateFiles(optionsFiles)
+    async create(
+        @UploadedFiles() files,
+        @Body() createUserDto: CreateUserDto,
+        @Query() query: QueryUserDto,
+    ): Promise<ResponseUserDto> {
+        return plainToInstance(
+            ResponseUserDto,
+            await this.userService.create(createUserDto, files, query),
+        );
     }
 
-    @Roles(ROLE.ADMIN, ROLE.USER)
-    @Get()
-    findAll() {
-        return this.userService.findAll();
-    }
-
-    @Roles(ROLE.ADMIN, ROLE.USER)
-    @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.userService.findOne(+id);
-    }
-
-    @Roles(ROLE.ADMIN, ROLE.USER)
+    @Roles(ROLE.ADMIN)
     @Patch(':id')
-    update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-        return this.userService.update(+id, updateUserDto);
+    @ValidateFiles(optionsFiles)
+    async update(
+        @Param() { id }: ParamUserDto,
+        @UploadedFiles() files,
+        @Body() updateUserDto: UpdateUserDto,
+        @Query() query: QueryUserDto,
+    ): Promise<ResponseUserDto> {
+        return plainToInstance(
+            ResponseUserDto,
+            await this.userService.update(updateUserDto, id, files, query),
+        );
     }
 
-    @Roles(ROLE.ADMIN, ROLE.USER)
+    @Roles(ROLE.ADMIN)
+    @Get()
+    async findAll(@Query() query: QueryUserDto): Promise<ResponseUserDto[]> {
+        return plainToInstance(
+            ResponseUserDto,
+            await this.userService.findAll(query),
+        );
+    }
+
+    @Roles(ROLE.ADMIN)
     @Delete(':id')
-    remove(@Param('id') id: string) {
+    remove(@Param() { id }: ParamUserDto) {
         return this.userService.remove(+id);
     }
 }

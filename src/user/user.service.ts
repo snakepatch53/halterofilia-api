@@ -4,40 +4,62 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import { SaveFiles } from 'src/common/decorators/save-files.decorator';
+import { USER_FILES_PATH } from 'src/common/constants/path.constants';
+import { QueryUserDto } from './dto/query-user.dto';
+import { UpdateFiles } from 'src/common/decorators/update-file.decorator';
+import { DtoArg, FilesArg, IdArg } from 'src/common/decorators/file.decorators';
+import { DeleteFiles } from 'src/common/decorators/delete-file.decorator';
+import { ROLE } from 'src/common/constants/role.constants';
+
+const optionsFiles = {
+    fieldName: 'photo',
+    destination: USER_FILES_PATH,
+};
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(User)
-        private usersRepository: Repository<User>,
+        private repository: Repository<User>,
     ) {}
 
-    create(createUserDto: CreateUserDto) {
-        return this.usersRepository.save(createUserDto);
-    }
-
-    findAll() {
-        return this.usersRepository.find();
-    }
-
-    findOne(id: number) {
-        return this.usersRepository.findOne({
-            where: {
-                id,
-            },
+    findAll(query: QueryUserDto) {
+        return this.repository.find({
+            relations: query.include,
         });
     }
 
-    async update(id: number, updateUserDto: UpdateUserDto) {
-        await this.usersRepository.update(id, updateUserDto);
-        return {
-            id,
-            ...updateUserDto,
-        };
+    @SaveFiles(optionsFiles)
+    async create(
+        @DtoArg() createUserDto: CreateUserDto,
+        @FilesArg() files,
+        query: QueryUserDto,
+    ) {
+        const created = await this.repository.save(createUserDto);
+        return this.repository.findOne({
+            where: { id: created.id },
+            relations: query.include,
+        });
     }
 
-    async remove(id: number) {
-        const result = await this.usersRepository.delete(id);
+    @UpdateFiles(optionsFiles)
+    async update(
+        @DtoArg() updateUserDto: UpdateUserDto,
+        @IdArg() id: number,
+        @FilesArg() files,
+        query: QueryUserDto,
+    ) {
+        await this.repository.save({ id, ...updateUserDto });
+        return this.repository.findOne({
+            where: { id },
+            relations: query.include,
+        });
+    }
+
+    @DeleteFiles(optionsFiles)
+    async remove(@IdArg() id: number) {
+        const result = await this.repository.delete(id);
         return {
             message: `User con id ${id} ha sido eliminado`,
             ...result,

@@ -3,6 +3,8 @@ import { Controller, Post, Body, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto, LogoutDto } from './dto/auth.dto';
 import { AuthGateway } from './auth.gateway';
+import { ResponseUserDto } from 'src/user/dto/response-user.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Controller('auth')
 export class AuthController {
@@ -31,7 +33,7 @@ export class AuthController {
         const response = {
             message: 'You are logged in!',
             ...token,
-            user,
+            user: plainToInstance(ResponseUserDto, user),
         };
 
         if (!socketId) return response;

@@ -17,15 +17,11 @@ export class ExistsInDbConstraint implements ValidatorConstraintInterface {
             );
             return false;
         }
-
         const [entity, column, shouldExist] = args.constraints; // 🔥 Extraemos parámetros
         const repository = AppDataSource.getRepository(entity);
-
         const record = await repository.findOne({ where: { [column]: value } });
-
         return shouldExist ? !!record : !record; // ✅ Devuelve `true` si cumple la condición
     }
-
     defaultMessage(args: ValidationArguments): string {
         const [_, column, shouldExist] = args.constraints;
         return shouldExist

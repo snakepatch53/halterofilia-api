@@ -14,12 +14,10 @@ import { CreateInstitutionDto } from './dto/create-institution.dto';
 import { UpdateInstitutionDto } from './dto/update-institution.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { QueriesInstitutionDto } from './dto/queries-institution.dto';
 import { ParamInstitutionDto } from './dto/param-institution.dto';
 import { User } from 'src/user/entities/user.entity';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { ROLE } from 'src/common/enums/role.enum';
+import { QueryInstitutionDto } from './dto/query-institution.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('institution')
@@ -29,7 +27,7 @@ export class InstitutionController {
     @Post()
     create(
         @Body() createInstitutionDto: CreateInstitutionDto,
-        @Query() query: QueriesInstitutionDto,
+        @Query() query: QueryInstitutionDto,
         @CurrentUser() user: User,
     ) {
         return this.institutionService.create(
@@ -39,9 +37,8 @@ export class InstitutionController {
         );
     }
 
-    @Roles(ROLE.ADMIN, ROLE.USER)
     @Get()
-    findAll(@Query() query: QueriesInstitutionDto, @CurrentUser() user: User) {
+    findAll(@Query() query: QueryInstitutionDto, @CurrentUser() user: User) {
         return this.institutionService.findAll(query, user);
     }
 
@@ -49,7 +46,7 @@ export class InstitutionController {
     update(
         @Param() { id }: ParamInstitutionDto,
         @Body() updateInstitutionDto: UpdateInstitutionDto,
-        @Query() query: QueriesInstitutionDto,
+        @Query() query: QueryInstitutionDto,
         @CurrentUser() user: User,
     ) {
         return this.institutionService.update(

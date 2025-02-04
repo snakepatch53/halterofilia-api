@@ -1,5 +1,5 @@
 import { Championship } from 'src/championship/entities/championship.entity';
-import { ROLE } from 'src/common/enums/role.enum';
+import { ROLE } from 'src/common/constants/role.constants';
 import { Institution } from 'src/institution/entities/institution.entity';
 import { Judge } from 'src/judge/entities/judge.entity';
 import { Registration } from 'src/registration/entities/registration.entity';
@@ -13,8 +13,14 @@ export class User {
     @Column()
     name: string;
 
-    @Column({ type: 'enum', enum: ROLE, default: ROLE.USER })
-    role: string;
+    @Column()
+    lastname: string;
+
+    @Column()
+    dni: string;
+
+    @Column()
+    email: string;
 
     @Column()
     username: string;
@@ -22,6 +28,13 @@ export class User {
     @Column()
     password: string;
 
+    @Column({ nullable: true })
+    photo?: string;
+
+    @Column({ type: 'enum', enum: ROLE, default: ROLE.USER })
+    role: string;
+
+    // Relations
     @OneToMany(() => Institution, (institution) => institution.user)
     institutions: Institution[];
 
