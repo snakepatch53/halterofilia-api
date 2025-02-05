@@ -6,8 +6,6 @@ export function getEntityRelations(
     relationParent?: string,
     oldEntities: string[] = [],
 ): string[] {
-    console.log(oldEntities);
-
     if (!includeSubRelations) {
         return getMetadataArgsStorage()
             .relations.filter((relation) => relation.target === entity)
