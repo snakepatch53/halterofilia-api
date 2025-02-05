@@ -17,15 +17,12 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { Public } from 'src/auth/decorators/public.decorator';
 import { ROLE } from 'src/common/constants/role.constants';
 import { ParamUserDto } from './dto/param-user.dto';
 import { ValidateFiles } from 'src/common/decorators/validate-files.decorator';
 import { plainToInstance } from 'class-transformer';
 import { ResponseUserDto } from './dto/response-user.dto';
 import { QueryUserDto } from './dto/query-user.dto';
-import { CurrentUser } from 'src/common/decorators/current-user.decorator';
-import { User } from './entities/user.entity';
 
 const optionsFiles = {
     fieldName: 'photo',
@@ -37,6 +34,15 @@ export class UserController {
     constructor(private readonly userService: UserService) {}
 
     // @Public()
+
+    @Roles(ROLE.ADMIN)
+    @Get()
+    async findAll(@Query() query: QueryUserDto): Promise<ResponseUserDto[]> {
+        return plainToInstance(
+            ResponseUserDto,
+            await this.userService.findAll(query),
+        );
+    }
 
     @Roles(ROLE.ADMIN)
     @Post()
@@ -64,15 +70,6 @@ export class UserController {
         return plainToInstance(
             ResponseUserDto,
             await this.userService.update(updateUserDto, id, files, query),
-        );
-    }
-
-    @Roles(ROLE.ADMIN)
-    @Get()
-    async findAll(@Query() query: QueryUserDto): Promise<ResponseUserDto[]> {
-        return plainToInstance(
-            ResponseUserDto,
-            await this.userService.findAll(query),
         );
     }
 

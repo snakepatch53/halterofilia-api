@@ -15,6 +15,19 @@ export class InstitutionService {
         private repository: Repository<Institution>,
     ) {}
 
+    findAll(query: QueryInstitutionDto, user: User) {
+        if (user.role === ROLE.ADMIN) {
+            return this.repository.find({
+                relations: query.include,
+            });
+        }
+
+        return this.repository.find({
+            where: { user: user },
+            relations: query.include,
+        });
+    }
+
     async create(
         createInstitutionDto: CreateInstitutionDto,
         query: QueryInstitutionDto,
@@ -31,19 +44,6 @@ export class InstitutionService {
 
         return this.repository.findOne({
             where: { id: created.id },
-            relations: query.include,
-        });
-    }
-
-    findAll(query: QueryInstitutionDto, user: User) {
-        if (user.role === ROLE.ADMIN) {
-            return this.repository.find({
-                relations: query.include,
-            });
-        }
-
-        return this.repository.find({
-            where: { user: user },
             relations: query.include,
         });
     }

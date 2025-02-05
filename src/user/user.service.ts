@@ -11,6 +11,7 @@ import { UpdateFiles } from 'src/common/decorators/update-file.decorator';
 import { DtoArg, FilesArg, IdArg } from 'src/common/decorators/file.decorators';
 import { DeleteFiles } from 'src/common/decorators/delete-file.decorator';
 import { ROLE } from 'src/common/constants/role.constants';
+import { encryptPassword } from 'src/common/utils/encrypt.password';
 
 const optionsFiles = {
     fieldName: 'photo',
@@ -24,7 +25,7 @@ export class UserService {
         private repository: Repository<User>,
     ) {}
 
-    findAll(query: QueryUserDto) {
+    findAll(query: QueryUserDto): Promise<User[]> {
         return this.repository.find({
             relations: query.include,
         });
@@ -36,6 +37,7 @@ export class UserService {
         @FilesArg() files,
         query: QueryUserDto,
     ) {
+        createUserDto.password = await encryptPassword(createUserDto.password);
         const created = await this.repository.save(createUserDto);
         return this.repository.findOne({
             where: { id: created.id },
@@ -50,6 +52,7 @@ export class UserService {
         @FilesArg() files,
         query: QueryUserDto,
     ) {
+        updateUserDto.password = await encryptPassword(updateUserDto.password);
         await this.repository.save({ id, ...updateUserDto });
         return this.repository.findOne({
             where: { id },

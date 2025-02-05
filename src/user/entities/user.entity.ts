@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { Championship } from 'src/championship/entities/championship.entity';
 import { ROLE } from 'src/common/constants/role.constants';
 import { Institution } from 'src/institution/entities/institution.entity';
@@ -25,14 +26,18 @@ export class User {
     @Column()
     username: string;
 
-    @Column()
+    // @Exclude()
+    @Column({ select: false })
     password: string;
+
+    @Column({ type: 'enum', enum: ROLE, default: ROLE.USER })
+    role: string;
 
     @Column({ nullable: true })
     photo?: string;
 
-    @Column({ type: 'enum', enum: ROLE, default: ROLE.USER })
-    role: string;
+    @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+    createdAt: Date;
 
     // Relations
     @OneToMany(() => Institution, (institution) => institution.user)
