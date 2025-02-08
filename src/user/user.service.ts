@@ -52,7 +52,10 @@ export class UserService {
         @FilesArg() files,
         query: QueryUserDto,
     ) {
-        updateUserDto.password = await encryptPassword(updateUserDto.password);
+        if (updateUserDto.password)
+            updateUserDto.password = await encryptPassword(
+                updateUserDto.password,
+            );
         await this.repository.save({ id, ...updateUserDto });
         return this.repository.findOne({
             where: { id },
