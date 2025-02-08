@@ -37,10 +37,14 @@ export class Championship {
     @Column()
     location: string;
 
+    @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+    createdAt: Date;
+
     // relationship
     @ManyToOne(() => User, (user) => user.championships)
     user: User;
 
+    // relationship inverse
     @OneToMany(() => Category, (category) => category.championship)
     categories: Category[];
 }

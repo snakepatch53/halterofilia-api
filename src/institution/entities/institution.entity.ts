@@ -35,11 +35,16 @@ export class Institution {
     @Column()
     location: string;
 
+    @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+    createdAt: Date;
+
+    // relationship
     @ManyToOne(() => User, (user) => user.institutions, {
         onDelete: 'CASCADE',
     })
     user: User;
 
+    // relationship inverse
     @OneToMany(() => Registration, (registration) => registration.institution)
     registrations: Registration[];
 }
