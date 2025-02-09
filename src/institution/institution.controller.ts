@@ -24,6 +24,11 @@ import { QueryInstitutionDto } from './dto/query-institution.dto';
 export class InstitutionController {
     constructor(private readonly institutionService: InstitutionService) {}
 
+    @Get()
+    findAll(@Query() query: QueryInstitutionDto, @CurrentUser() user: User) {
+        return this.institutionService.findAll(query, user);
+    }
+
     @Post()
     create(
         @Body() createInstitutionDto: CreateInstitutionDto,
@@ -35,11 +40,6 @@ export class InstitutionController {
             query,
             user,
         );
-    }
-
-    @Get()
-    findAll(@Query() query: QueryInstitutionDto, @CurrentUser() user: User) {
-        return this.institutionService.findAll(query, user);
     }
 
     @Patch(':id')

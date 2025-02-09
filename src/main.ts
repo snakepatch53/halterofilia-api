@@ -7,6 +7,7 @@ import * as express from 'express';
 import { join } from 'path';
 
 import * as dotenv from 'dotenv';
+import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 dotenv.config();
 
 async function bootstrap() {
@@ -19,6 +20,7 @@ async function bootstrap() {
             transformOptions: { enableImplicitConversion: true }, // 🔥 Permite conversiones automáticas
         }),
     );
+    app.useGlobalInterceptors(new TransformInterceptor());
     useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
     // Centraliza la config de CORS en un solo objeto:

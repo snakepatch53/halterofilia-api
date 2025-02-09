@@ -16,11 +16,10 @@ export class InstitutionService {
     ) {}
 
     findAll(query: QueryInstitutionDto, user: User) {
-        if (user.role === ROLE.ADMIN) {
+        if (user.role === ROLE.ADMIN)
             return this.repository.find({
                 relations: query.include,
             });
-        }
 
         return this.repository.find({
             where: { user: user },
