@@ -25,11 +25,6 @@ import { ParamChampionshipDto } from 'src/championship/dto/param-championship.dt
 export class CategoryController {
     constructor(private readonly categoryService: CategoryService) {}
 
-    @Get()
-    findAll(@Query() query: QueryCategoryDto, @CurrentUser() user: User) {
-        return this.categoryService.findAll(query, user);
-    }
-
     @Get('championship/:id')
     findAllByChampionshipId(
         @Param() { id }: ParamChampionshipDto,

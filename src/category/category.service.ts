@@ -18,10 +18,6 @@ export class CategoryService {
         private repositoryChampionship: Repository<Championship>,
     ) {}
 
-    findAll(query: QueryCategoryDto, user: User) {
-        return this.repository.find({ relations: query.include });
-    }
-
     findAllByChampionshipId(id: number, query: QueryCategoryDto, user: User) {
         if (user.role === ROLE.ADMIN)
             return this.repository.find({
