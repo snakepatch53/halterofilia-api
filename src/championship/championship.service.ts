@@ -15,6 +15,19 @@ export class ChampionshipService {
         private repository: Repository<Championship>,
     ) {}
 
+    findOne(id: number, query: QueryChampionshipDto, user: User) {
+        if (user.role === ROLE.ADMIN)
+            return this.repository.findOne({
+                where: { id },
+                relations: query.include,
+            });
+
+        return this.repository.findOne({
+            where: { id, user: user },
+            relations: query.include,
+        });
+    }
+
     findAll(query: QueryChampionshipDto, user: User) {
         if (user.role === ROLE.ADMIN)
             return this.repository.find({

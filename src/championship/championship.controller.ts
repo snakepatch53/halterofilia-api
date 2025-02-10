@@ -24,6 +24,20 @@ import { ParamChampionshipDto } from './dto/param-championship.dto';
 export class ChampionshipController {
     constructor(private readonly championshipService: ChampionshipService) {}
 
+    @Get()
+    findAll(@Query() query: QueryChampionshipDto, @CurrentUser() user: User) {
+        return this.championshipService.findAll(query, user);
+    }
+
+    @Get(':id')
+    findOne(
+        @Param() { id }: ParamChampionshipDto,
+        @Query() query: QueryChampionshipDto,
+        @CurrentUser() user: User,
+    ) {
+        return this.championshipService.findOne(id, query, user);
+    }
+
     @Post()
     create(
         @Body() createChampionshipDto: CreateChampionshipDto,
@@ -35,11 +49,6 @@ export class ChampionshipController {
             query,
             user,
         );
-    }
-
-    @Get()
-    findAll(@Query() query: QueryChampionshipDto, @CurrentUser() user: User) {
-        return this.championshipService.findAll(query, user);
     }
 
     @Patch(':id')

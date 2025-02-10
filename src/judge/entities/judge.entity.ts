@@ -14,6 +14,12 @@ export class Judge {
     @PrimaryGeneratedColumn()
     id: number;
 
+    @Column({ type: 'boolean', default: false })
+    supervisor: boolean;
+
+    @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+    createdAt: Date;
+
     // relationships
     @ManyToOne(() => Category, (category) => category.judges)
     category: Category;
@@ -21,6 +27,7 @@ export class Judge {
     @ManyToOne(() => User, (user) => user.judges)
     user: User;
 
+    // relationships reverse
     @OneToMany(() => Qualification, (qualification) => qualification.judge)
     qualifications: Qualification[];
 }

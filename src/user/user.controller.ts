@@ -23,6 +23,7 @@ import { ValidateFiles } from 'src/common/decorators/validate-files.decorator';
 import { plainToInstance } from 'class-transformer';
 import { ResponseUserDto } from './dto/response-user.dto';
 import { QueryUserDto } from './dto/query-user.dto';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 const optionsFiles = {
     fieldName: 'photo',
@@ -33,9 +34,7 @@ const optionsFiles = {
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
-    // @Public()
-
-    @Roles(ROLE.ADMIN)
+    @Public()
     @Get()
     async findAll(@Query() query: QueryUserDto): Promise<ResponseUserDto[]> {
         return plainToInstance(

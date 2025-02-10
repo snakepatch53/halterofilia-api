@@ -30,6 +30,18 @@ export class CategoryService {
         });
     }
 
+    findOne(id: number, query: QueryCategoryDto, user: User) {
+        if (user.role === ROLE.ADMIN)
+            return this.repository.findOne({
+                where: { id },
+                relations: query.include,
+            });
+        return this.repository.findOne({
+            where: { id, championship: { user: user } },
+            relations: query.include,
+        });
+    }
+
     async create(
         createCategoryDto: CreateCategoryDto,
         query: QueryCategoryDto,
@@ -69,7 +81,7 @@ export class CategoryService {
             await this.repository.save({
                 id,
                 ...updateCategoryDto,
-                championshipId: updateCategoryDto.championship,
+                championship: updateCategoryDto.championship,
             });
         else {
             const myRow = await this.repository.findOne({
@@ -83,7 +95,7 @@ export class CategoryService {
             await this.repository.save({
                 id,
                 ...updateCategoryDto,
-                user: user,
+                championship: updateCategoryDto.championship,
             });
         }
         return this.repository.findOne({

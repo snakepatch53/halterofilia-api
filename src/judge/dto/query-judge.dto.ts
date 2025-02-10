@@ -1,17 +1,16 @@
 import { ArrayUnique, IsArray, IsIn, IsOptional } from 'class-validator';
 import { Transform } from 'class-transformer';
 
-export class QueryCategoryDto {
+export class QueryJudgeDto {
     // private static readonly VALID_RELATIONS = getEntityRelations(
     //     Category,
     //     true,
     // );
     private static readonly VALID_RELATIONS = [
-        'championship',
-        'championship.user',
-        'judges',
-        'judges.user',
-    ]; // declaro de esta forma por que la funcion falla al no relacionar 'category' y 'categories'
+        'category',
+        'category.championship',
+        'user',
+    ];
 
     @IsOptional()
     @IsArray({ message: 'include debe ser una lista de strings' }) // 🔥 Acepta un array
@@ -22,10 +21,10 @@ export class QueryCategoryDto {
         if (Array.isArray(value)) return value; // 🔥 Si ya es un array, mantenerlo
         return []; // 🔥 Si es cualquier otro tipo, devolver array vacío
     })
-    @IsIn(QueryCategoryDto.VALID_RELATIONS, {
+    @IsIn(QueryJudgeDto.VALID_RELATIONS, {
         each: true,
         message: (args) => {
-            return `Relacion/es: ${args.value} inválida/s. Relacion/es permitida/s: ${QueryCategoryDto.VALID_RELATIONS.join(', ')}`;
+            return `Relacion/es: ${args.value} inválida/s. Relacion/es permitida/s: ${QueryJudgeDto.VALID_RELATIONS.join(', ')}`;
         },
     })
     include?: string[];

@@ -34,6 +34,15 @@ export class CategoryController {
         return this.categoryService.findAllByChampionshipId(id, query, user);
     }
 
+    @Get(':id')
+    findAOne(
+        @Param() { id }: ParamCategoryDto,
+        @Query() query: QueryCategoryDto,
+        @CurrentUser() user: User,
+    ) {
+        return this.categoryService.findOne(id, query, user);
+    }
+
     @Post()
     create(
         @Body() createCategoryDto: CreateCategoryDto,
