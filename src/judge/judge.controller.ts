@@ -19,6 +19,7 @@ import { ParamCategoryDto } from 'src/category/dto/param-category.dto';
 import { QueryJudgeDto } from './dto/query-judge.dto';
 import { User } from 'src/user/entities/user.entity';
 import { ParamJudgeDto } from './dto/param-judge.dto';
+import { AssignParamsToBody } from 'src/common/decorators/assign-params-to-body.decorator';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('judge')
@@ -44,6 +45,7 @@ export class JudgeController {
     }
 
     @Patch(':id')
+    @AssignParamsToBody()
     update(
         @Param() { id }: ParamJudgeDto,
         @Body() updateJudgeDto: UpdateJudgeDto,

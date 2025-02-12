@@ -2,7 +2,9 @@ import { Transform } from 'class-transformer';
 import { IsBoolean, IsInt, IsNotEmpty, IsOptional } from 'class-validator';
 import { Category } from 'src/category/entities/category.entity';
 import { IsExistsInDb } from 'src/common/validators/is-exists-in-db';
+import { IsNotExistsRelationInDb } from 'src/common/validators/is-exists-relation-in-db';
 import { User } from 'src/user/entities/user.entity';
+import { Judge } from '../entities/judge.entity';
 
 export class CreateJudgeDto {
     @IsOptional()
@@ -16,6 +18,19 @@ export class CreateJudgeDto {
     @IsBoolean({ message: 'El supervisor debe ser un booleano' })
     supervisor: any; // any para aceptar string, number y boolean y transformarlos de ser necesario
 
+    @IsNotEmpty({ message: 'El userId es requerido' })
+    @IsInt({ message: 'El userId debe ser un número entero' })
+    @IsExistsInDb(User, 'id', {
+        message: 'El usuario con el ID $value no existe',
+    })
+    @IsNotExistsRelationInDb(Judge, 'user', 'category', {
+        message: 'El juez ya existe en la categoría',
+    })
+    userId: number;
+    get user(): User {
+        return { id: this.userId } as User;
+    }
+
     @IsNotEmpty({ message: 'La categoryId es requerido' })
     @IsInt({ message: 'La categoryId debe ser un número entero' })
     @IsExistsInDb(Category, 'id', {
@@ -24,15 +39,5 @@ export class CreateJudgeDto {
     categoryId: number;
     get category(): Category {
         return { id: this.categoryId } as Category;
-    }
-
-    @IsNotEmpty({ message: 'El userId es requerido' })
-    @IsInt({ message: 'El userId debe ser un número entero' })
-    @IsExistsInDb(User, 'id', {
-        message: 'El usuario con el ID $value no existe',
-    })
-    userId: number;
-    get user(): User {
-        return { id: this.userId } as User;
     }
 }

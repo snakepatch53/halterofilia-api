@@ -7,9 +7,11 @@ import {
     ManyToOne,
     OneToMany,
     PrimaryGeneratedColumn,
+    Unique,
 } from 'typeorm';
 
 @Entity('judges')
+@Unique(['user', 'category'])
 export class Judge {
     @PrimaryGeneratedColumn()
     id: number;
